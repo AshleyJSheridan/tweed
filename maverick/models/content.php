@@ -4,7 +4,11 @@ use \maverick\db as db;
 
 class content
 {
-
+	/**
+	 * fetch the tweets from Twitter using the specified query params in the DB
+	 * the query params are specific to the passed in hash
+	 * @param string $campaign_hash the md5 hash of the campaign
+	 */
 	static function fetch_tweets_from_twitter($campaign_hash)
 	{
 		$app = \maverick\maverick::getInstance();
@@ -56,7 +60,7 @@ class content
 			// https://twitteroauth.com/
 			$connection = new \Abraham\TwitterOAuth\TwitterOAuth($app->get_config('twitter.consumer_key'), $app->get_config('twitter.consumer_secret'), $app->get_config('twitter.access_token'), $app->get_config('twitter.access_token_secret') );
 
-			$search = $connection->get('search/tweets', array('q'=>"#sxsw -2016", 'result_type'=>'recent', 'count'=>1, ) );
+			$search = $connection->get('search/tweets', array('q'=>"#sxsw -2016", 'result_type'=>'recent', 'count'=>100, ) );
 
 			if(!empty($search->statuses))
 			{
@@ -70,14 +74,14 @@ class content
 						'user_screen_name' => $status->user->screen_name,
 						'user_location' => $status->user->location,
 						'tweet_id' => $status->id_str,
-						'created_at' => $status->created_at,
-						'content' => $status->text,
+						'created_at' => date("Y-m-d H:i:s", strtotime($status->created_at) ),
+						'content' => (!empty($status->retweeted_status) )?$status->retweeted_status->text:$status->text,
 						'source' => $status->source,
 						'in_reply_to_id' => $status->in_reply_to_user_id_str,
 						'in_reply_to_screen_name' => $status->in_reply_to_screen_name,
 						'retweet_count' => $status->retweet_count,
 					);
-					
+					var_dump($status);
 					$tweet_id = db::table('tweets')
 						->insert($data)
 						->fetch();
@@ -101,11 +105,88 @@ class content
 					$tweet_entities = db::table('tweet_entities')
 						->insert($data)
 						->fetch();
-					
-					return (bool)$tweet_entities;
 				}
 			}
 		}
 		
+	}
+	
+	/**
+	 * retrieve tweets for display from the db that match the passed in campaign hash
+	 * @param string $campaign_hash the hash for this campaign
+	 * @param int $total the total number of results to return
+	 * @param int $page the page of results to return
+	 * @param string $lang the 2-character ISO language code
+	 * @param string $screen_name the screen name of a user to retrieve tweets for
+	 * @param int $since timestamp determining when to return tweets from
+	 * @param int $before timestamp determining when to return tweets until
+	 * @param string $reply show, hide, or only - determines if the list will contain, not contain or consist only of, replies
+	 * @param string $retweet show, hide, or only - determines if the list will contain, not contain or consist only of, retweets
+	 * @param string $approved	yes or no, show only approved or include non-approved tweets
+	 */
+	static function get_tweets($campaign_hash, $total, $page, $lang, $screen_name, $since, $before, $reply, $retweet, $approved)
+	{
+		$app = \maverick\maverick::getInstance();
+		
+		$campaign = db::table('campaigns')
+			->where('campaign_hash', '=', db::raw($campaign_hash))
+			->get()
+			->fetch();
+		
+		if(!empty($campaign[0]['id']) )
+		{
+			$campaign_id = $campaign[0]['id'];
+			$total = ($total)?$total:$app->get_config('twitter.total');
+			$offset = ($page)?($page-1)*$total:0;
+			
+			$tweets = db::table('tweets')
+				->where('campaign_id', '=', db::raw($campaign_id) )
+				->limit($total, $offset)
+				->orderBy('created_at', 'desc')
+				;
+			
+			// filter by any additional parameters which are not null or false
+			if($lang)
+				$tweets = $tweets->where('iso_lang', '=', db::raw ($lang) );
+			if($screen_name)
+				$tweets = $tweets->where('user_screen_name', '=', db::raw ($screen_name) );
+			if($since)
+				$tweets = $tweets->where('created_at', '>', db::raw (date("Y-m-d H:i:s", $since) ) );
+			if($before)
+				$tweets = $tweets->where('created_at', '<', db::raw (date("Y-m-d H:i:s", $before) ) );
+			if($reply)
+			{
+				switch($reply)
+				{
+					case 'hide':
+						$tweets = $tweets->where('in_reply_to_id', '!=', db::raw(null) );
+						break;
+					case 'only':
+						$tweets = $tweets->where('in_reply_to_id', '=', db::raw(null) );
+						break;
+				}
+			}
+			if($retweet)
+			{
+				switch($reply)
+				{
+					case 'hide':
+						$tweets = $tweets->where('retweet_count', '=', db::raw(0) );
+						break;
+					case 'only':
+						$tweets = $tweets->where('in_reply_to_id', '>', db::raw(0) );
+						break;
+				}
+			}
+
+			
+			// get the tweets
+			$tweets = $tweets->get()->fetch();
+			
+			var_dump($tweets);
+			exit;
+		}
+		else
+			return 'Campaign does not exist';
 	}
 }
