@@ -122,7 +122,7 @@ class content
 	 * @param int $before timestamp determining when to return tweets until
 	 * @param string $reply show, hide, or only - determines if the list will contain, not contain or consist only of, replies
 	 * @param string $retweet show, hide, or only - determines if the list will contain, not contain or consist only of, retweets
-	 * @param string $approved	yes or no, show only approved or include non-approved tweets
+	 * @param string $approved yes or no, show only approved or include non-approved tweets
 	 */
 	static function get_tweets($campaign_hash, $total, $page, $lang, $screen_name, $since, $before, $reply, $retweet, $approved)
 	{
@@ -159,22 +159,22 @@ class content
 				switch($reply)
 				{
 					case 'hide':
-						$tweets = $tweets->where('in_reply_to_id', '!=', db::raw(null) );
+						$tweets = $tweets->where('in_reply_to_id', '=', db::raw('0') );
 						break;
 					case 'only':
-						$tweets = $tweets->where('in_reply_to_id', '=', db::raw(null) );
+						$tweets = $tweets->where('in_reply_to_id', '>', db::raw('0') );
 						break;
 				}
 			}
 			if($retweet)
 			{
-				switch($reply)
+				switch($retweet)
 				{
 					case 'hide':
-						$tweets = $tweets->where('retweet_count', '=', db::raw(0) );
+						$tweets = $tweets->where('retweet_count', '=', db::raw('0') );
 						break;
 					case 'only':
-						$tweets = $tweets->where('in_reply_to_id', '>', db::raw(0) );
+						$tweets = $tweets->where('retweet_count', '>', db::raw('0') );
 						break;
 				}
 			}
@@ -183,8 +183,7 @@ class content
 			// get the tweets
 			$tweets = $tweets->get()->fetch();
 			
-			var_dump($tweets);
-			exit;
+			return $tweets;
 		}
 		else
 			return 'Campaign does not exist';

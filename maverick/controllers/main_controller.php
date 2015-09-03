@@ -12,9 +12,10 @@ class main_controller extends base_controller
 			'screen_name' => 'string',
 			'since' => 'datetime',
 			'before' => 'datetime',
-			'reply' => array('regex', 'show', 'hide', 'only'),
-			'retweet' => array('regex', 'show', 'hide', 'only'),
+			'reply' => array('regex', '/^(show|hide|only)$/'),
+			'retweet' => array('regex', '/^(show|hide|only)$/'),
 			'approved' => array('regex', '/^(yes|no)$/'),
+			'format' => array('regex', '/^(json|html)$/'),
 		);
 		
 		// normalise requested filter parameters to safe values - prevents attacks from input
@@ -60,7 +61,19 @@ class main_controller extends base_controller
 			view::make('errors/plain_error')->with('message', $tweets)->headers($headers)->render(true, true);
 		}
 		
-		
+		switch($format)
+		{
+			case 'html':
+				// todo: pull in templates here that each tweet would be wrapped in - this is unspecced right now
+				break;
+			default:
+				// json
+				$headers = array(
+					'content-type'=>'application/json',
+				);
+				view::make('json')->with('tweets', json_encode($tweets) )->headers($headers)->render(true, true);
+				break;
+		}
 	}
 	
 	/**
