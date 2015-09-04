@@ -1,8 +1,12 @@
 <?php
 class main_controller extends base_controller
 {
-	function __construct() {}
+	function __construct(){}
 	
+	/**
+	 * gets tweets from the db for a given campaign
+	 * @param string $campaign_hash the hash value for the campaign
+	 */
 	function get_tweets($campaign_hash)
 	{
 		$params = array(
@@ -71,7 +75,7 @@ class main_controller extends base_controller
 				$headers = array(
 					'content-type'=>'application/json',
 				);
-				view::make('json')->with('tweets', json_encode($tweets) )->headers($headers)->render(true, true);
+				view::make('output/json')->with('tweets', json_encode($tweets) )->headers($headers)->render(true, true);
 				break;
 		}
 	}

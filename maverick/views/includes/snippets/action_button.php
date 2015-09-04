@@ -1,0 +1,1 @@
+<button title="{{action}}" class="action {{class}}">{{action}}</button>

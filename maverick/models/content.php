@@ -188,4 +188,67 @@ class content
 		else
 			return 'Campaign does not exist';
 	}
+	
+	/**
+	 * determines if a username and password is valid - this does not presume any particular type of user, just a valid user
+	 * @param string $username the username of the user to determine
+	 * @param string $password the password for the user
+	 * @return int|bool false if the user is not valid, or the id of the user otherwise
+	 */
+	static function check_login($username, $password)
+	{
+		$data = db::table('users')
+			->where('username', '=', db::raw($username) )
+			->where('password', '=', db::raw(md5($username . $password) ) )
+			->get()
+			->fetch();
+		return(isset($data[0])?(int)$data[0]['id']:false );
+	}
+	
+	static function get_all_campaigns()
+	{
+		$campaigns = db::table('campaigns AS c')
+			->leftJoin('queries AS q', array('q.campaign_id', '=', 'c.id') )
+			->leftJoin('users AS u', array('u.id', '=', 'c.created_by') )
+			->leftJoin('users AS u2', array('u2.id', '=', 'c.modified_by') )
+			->groupBy('c.id')
+			->get(array('c.id', 'c.name', 'c.start', 'c.end', 'c.last_used', 'COUNT(q.id) AS query_params', 'u.username AS created_by', 'u2.username AS modified_by', 'c.force_deactivated') )
+			->fetch()
+			;
+		
+		return $campaigns;
+	}
+	
+	/**
+	 * deals with the creation of action buttons (links) used throughout the CMS to do something
+	 * @param string $section the section, as all links will contain this in their URL
+	 * @param int $id the ID of the object being worked on
+	 * @param array $actions a basic single dimensional array of single-word actions, that go into the URL and the text of the link
+	 * @param string $extra_classes a string of extra classes that should be added to each button
+	 * @param string $type the type of element to use, either a button or a link
+	 * @return string
+	 */
+	static function generate_actions($section, $id, $actions = array(), $extra_classes='', $type='link')
+	{
+		if(empty($actions) || empty($section) )
+			return '';
+
+		$app = \maverick\maverick::getInstance();
+		
+		$type = in_array($type, array('link', 'button') )?$type:'link';
+		
+		$actions_html = '';
+		foreach($actions as $action)
+		{
+			$replacements = array(
+				'href' => str_replace(' ', '_', "/{$app->get_config('tweed.admin_path')}/$section/$action/$id"),
+				'action' => $action,
+				'id' => $id,
+				'section' => $section,
+				'class' => str_replace(' ', '_', $action) . " $extra_classes",
+			);
+			$actions_html .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "includes/snippets/action_$type.php", $replacements );
+		}
+		return $actions_html;
+	}
 }
