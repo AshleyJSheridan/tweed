@@ -1,0 +1,94 @@
+@charset "UTF-8";
+/*
+Document   : tweed
+Created on : 04-Sep-2015, 12:16:45
+Author     : ashley
+Description:
+Purpose of the stylesheet follows.
+*/
+* { -ms-box-sizing: content-box; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
+
+html { height: 100%; }
+
+body { margin: 0; font-family: "Lato", Arial, Verdana, sans-serif; background-color: #eeeeee; color: #333333; font-size: 12pt; height: 100%; }
+
+header { background-repeat: no-repeat; background-image: url(/img/maverick/logo_small_w300.png); background-size: 150px auto; padding-top: 160px; background-color: #333333; color: #eeeeee; width: 150px; height: 100%; float: left; }
+.basic header { background-image: url(/img/maverick/logo_large_w600.png); background-size: 600px auto; background-position: center top; background-color: #eeeeee; height: 330px; width: 100%; padding-top: 0; float: none; }
+header nav { display: block; }
+header nav a { color: #eeeeee; text-decoration: none; text-transform: uppercase; padding: 60px 5px 5px; display: block; background-repeat: no-repeat; background-position: center 10px; text-align: center; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+header nav a:hover, header nav a.active { background-color: #0d80b9; }
+header nav a.home { background-image: url(/img/icons/home.png); }
+header nav a.forms { background-image: url(/img/icons/forms.png); }
+header nav a.media { background-image: url(/img/icons/media.png); }
+header nav a.pages { background-image: url(/img/icons/pages.png); }
+header nav a.tags { background-image: url(/img/icons/tags.png); }
+header nav a.users { background-image: url(/img/icons/users.png); }
+header nav a.logout { background-image: url(/img/icons/logout.png); }
+header nav a.logs { background-image: url(/img/icons/logs.png); }
+header nav a.cultures { background-image: url(/img/icons/cultures.png); }
+header h1 { margin: 0; text-indent: -999em; height: 0; }
+
+a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; font-family: "Lato", Arial, Verdana, sans-serif; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+a.action.small, button.action.small, input[type=submit].action.small { width: 15px; height: 15px; margin-bottom: 0; background-size: 18px auto; float: none; }
+a.action.full, button.action.full, input[type=submit].action.full { width: 140px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; text-align: center; }
+a.action:hover, button.action:hover, input[type=submit].action:hover { background-color: #0d80b9; color: #eeeeee; }
+a.action.edit, button.action.edit, input[type=submit].action.edit { background-image: url(/img/icons/edit.png); }
+a.action.delete, button.action.delete, input[type=submit].action.delete { background-image: url(/img/icons/delete.png); }
+a.action.remove_value, button.action.remove_value, input[type=submit].action.remove_value { background-image: url(/img/icons/delete.png); }
+a.action.duplicate, button.action.duplicate, input[type=submit].action.duplicate { background-image: url(/img/icons/duplicate.png); }
+a.action.save, button.action.save, input[type=submit].action.save { background-image: url(/img/icons/save.png); }
+a.action.add_element, button.action.add_element, input[type=submit].action.add_element { background-image: url(/img/icons/add_element.png); }
+a.action.add_value, button.action.add_value, input[type=submit].action.add_value { background-image: url(/img/icons/add.png); }
+a.action.new_campaign, button.action.new_campaign, input[type=submit].action.new_campaign { background-image: url(/img/icons/form_new.png); }
+a.action.deleted_forms, button.action.deleted_forms, input[type=submit].action.deleted_forms { background-image: url(/img/icons/trash.png); }
+a.action.delete_full, button.action.delete_full, input[type=submit].action.delete_full { background-image: url(/img/icons/delete.png); }
+a.action.undelete, button.action.undelete, input[type=submit].action.undelete { background-image: url(/img/icons/restore.png); }
+a.action.new_user, button.action.new_user, input[type=submit].action.new_user { background-image: url(/img/icons/new_user.png); }
+a.action.update_permissions, button.action.update_permissions, input[type=submit].action.update_permissions { background-image: url(/img/icons/user_permissions.png); }
+a.action.list_permissions, button.action.list_permissions, input[type=submit].action.list_permissions { background-image: url(/img/icons/permissions.png); }
+a.action.add_permission, button.action.add_permission, input[type=submit].action.add_permission { background-image: url(/img/icons/add.png); }
+a.action.save_permissions, button.action.save_permissions, input[type=submit].action.save_permissions { background-image: url(/img/icons/save.png); }
+a.action.delete_permission, button.action.delete_permission, input[type=submit].action.delete_permission { background-image: url(/img/icons/delete.png); }
+a.action.delete_user, button.action.delete_user, input[type=submit].action.delete_user { background-image: url(/img/icons/delete.png); }
+a.action.save_user, button.action.save_user, input[type=submit].action.save_user { background-image: url(/img/icons/save.png); }
+a.action.view_details, button.action.view_details, input[type=submit].action.view_details { background-image: url(/img/icons/view_details.png); }
+a.action.filter, button.action.filter, input[type=submit].action.filter { background-image: url(/img/icons/filter.png); }
+a.action.add_group, button.action.add_group, input[type=submit].action.add_group { background-image: url(/img/icons/add_element.png); }
+a.action.add_tag, button.action.add_tag, input[type=submit].action.add_tag { background-image: url(/img/icons/add_tag.png); }
+a.action.deactivate, button.action.deactivate, input[type=submit].action.deactivate { background-image: url(/img/icons/cancel.png); }
+a.action.add_query, button.action.add_query, input[type=submit].action.add_query { background-image: url(/img/icons/add.png); }
+
+.error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin: 10px 0 20px; width: 100%; -webkit-box-shadow: 0px 0px 5px 1px red; -moz-box-shadow: 0px 0px 5px 1px red; box-shadow: 0px 0px 5px 1px red; }
+
+.clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+
+section.main { padding: 10px; float: left; }
+.basic section.main { float: none; }
+
+label { display: block; clear: both; width: 80%; margin-bottom: 10px; }
+label input, label textarea, label select { width: 70%; float: right; padding: 3px; }
+label select { /* this fixes a bug in Firefox (only tested so far on Linux) that extends the width of the select by the width of the ▼ bit */ -moz-box-sizing: border-box; }
+
+input { border: 1px solid #cccccc; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+input[type=submit], input[type=button] { background-repeat: no-repeat; }
+input[type=submit]:hover, input[type=button]:hover { -webkit-box-shadow: 0px 0px 5px 1px #0d80b9; -moz-box-shadow: 0px 0px 5px 1px #0d80b9; box-shadow: 0px 0px 5px 1px #0d80b9; }
+input:focus { -webkit-box-shadow: 0px 0px 5px 1px #0d80b9; -moz-box-shadow: 0px 0px 5px 1px #0d80b9; box-shadow: 0px 0px 5px 1px #0d80b9; }
+input[readonly] { background-color: #eeeeee; color: #999999; }
+
+form[name=login] { width: 600px; margin: 10px auto; }
+form[name=login] label { margin: 0 auto; }
+form[name=login] label input { width: 50%; float: right; padding: 5px; margin-bottom: 10px; }
+form[name=login] input[type=submit] { background-image: url(/img/icons/dialog-ok-apply.png); background-size: auto 30px; background-position: 10px center; padding: 10px; margin: 10px auto; display: block; width: 400px; }
+
+.filter_form { width: 600px; }
+.filter_form label { display: inline-block; width: 45%; }
+.filter_form label:nth-child(odd) { margin-right: 40px; }
+.filter_form label input, .filter_form label select { display: block; float: none; width: 100%; }
+
+.query { margin: 10px 0; padding: 10px; background-color: #dddddd; border-radius: 10px; }
+
+table.item_table { border-collapse: collapse; border: 1px solid #cccccc; margin: 10px 0; }
+table.item_table th, table.item_table td { border: 1px solid #cccccc; padding: 10px; }
+table.item_table th input, table.item_table td input { width: 350px; }
+table.item_table th input.short, table.item_table td input.short { width: 50px; }
+table.item_table th { background-color: #333333; color: #eeeeee; }

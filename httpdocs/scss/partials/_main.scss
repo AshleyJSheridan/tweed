@@ -1,0 +1,202 @@
+*
+{
+	-ms-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+}
+html
+{
+	height: 100%;
+}
+body
+{
+	margin: 0;
+	font-family: $body-font;
+	background-color: $light;
+	color: $dark;
+	font-size: $font-size;
+	height: 100%;
+}
+
+header
+{
+	background-repeat: no-repeat;
+	background-image: url(/img/maverick/logo_small_w300.png);
+	background-size: 150px auto;
+	padding-top: 150 + $spacing;
+	background-color: $dark;
+	color: $light;
+	width: 150px;
+	height: 100%;
+	float: left;
+	
+	.basic &
+	{
+		background-image: url(/img/maverick/logo_large_w600.png);
+		background-size: 600px auto;
+		background-position: center top;
+		background-color: $light;
+		height: 330px;
+		width: 100%;
+		padding-top: 0;
+		float: none;
+	}
+	nav
+	{
+		display: block;
+		
+		a
+		{
+			color: $light;
+			text-decoration: none;
+			text-transform: uppercase;
+			padding: 50+$spacing $spacing/2 $spacing/2;
+			display: block;
+			background-repeat: no-repeat;
+			background-position: center $spacing;
+			text-align: center;
+			
+			-moz-transition: all 0.5s ease 0s;
+			-o-transition: all 0.5s ease 0s;
+			-webkit-transition: all 0.5s ease 0s;
+			transition: all 0.5s ease 0s;
+			
+			&:hover, &.active
+			{
+				background-color: $highlight;
+			}
+			
+			&.home {background-image: url(/img/icons/home.png);}
+			&.forms {background-image: url(/img/icons/forms.png);}
+			&.media {background-image: url(/img/icons/media.png);}
+			&.pages {background-image: url(/img/icons/pages.png);}
+			&.tags {background-image: url(/img/icons/tags.png);}
+			&.users {background-image: url(/img/icons/users.png);}
+			&.logout {background-image: url(/img/icons/logout.png);}
+			&.logs {background-image: url(/img/icons/logs.png);}
+			&.cultures {background-image: url(/img/icons/cultures.png);}
+		}
+	}
+	h1
+	{
+		margin: 0;
+		text-indent: -999em;
+		height: 0;
+	}
+}
+
+// action buttons
+a.action, button.action, input[type=submit].action
+{
+	background-repeat: no-repeat;
+	background-size: auto 26px;
+	background-position: center center;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	text-indent: -999em;
+	position: relative;
+	padding: $spacing;
+	cursor: pointer;
+	border: 1px solid $grey;
+	border-radius: 0.5em;
+	margin-right: $spacing;
+	font-family: $body-font;
+
+	-moz-transition: all 0.5s ease 0s;
+	-o-transition: all 0.5s ease 0s;
+	-webkit-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
+	
+	&.small
+	{
+		width: 15px;
+		height: 15px;
+		margin-bottom: 0;
+		background-size: 18px auto;
+		float: none;
+	}
+	&.full
+	{
+		width: 140px;
+		text-indent: inherit;
+		padding-left: 30px;
+		background-position: 5px center;
+		background-color: $light-grey;
+		color: $dark;
+		text-decoration: none;
+		text-align: center;
+	}
+	&:hover
+	{
+		background-color: $highlight;
+		color: $light;
+	}
+	
+	&.edit {background-image: url(/img/icons/edit.png);}
+	&.delete {background-image: url(/img/icons/delete.png);}
+	&.remove_value {background-image: url(/img/icons/delete.png);}
+	&.duplicate {background-image: url(/img/icons/duplicate.png);}
+	&.save {background-image: url(/img/icons/save.png);}
+	&.add_element {background-image: url(/img/icons/add_element.png);}
+	&.add_value {background-image: url(/img/icons/add.png);}
+	&.new_campaign {background-image: url(/img/icons/form_new.png);}
+	&.deleted_forms {background-image: url(/img/icons/trash.png);}
+	&.delete_full {background-image: url(/img/icons/delete.png);}
+	&.undelete {background-image: url(/img/icons/restore.png);}
+	&.new_user {background-image: url(/img/icons/new_user.png);}
+	&.update_permissions {background-image: url(/img/icons/user_permissions.png);}
+	&.list_permissions {background-image: url(/img/icons/permissions.png);}
+	&.add_permission {background-image: url(/img/icons/add.png);}
+	&.save_permissions {background-image: url(/img/icons/save.png);}
+	&.delete_permission {background-image: url(/img/icons/delete.png);}
+	&.delete_user {background-image: url(/img/icons/delete.png);}
+	&.save_user {background-image: url(/img/icons/save.png);}
+	&.view_details {background-image: url(/img/icons/view_details.png);}
+	&.filter {background-image: url(/img/icons/filter.png);}
+	&.add_group {background-image: url(/img/icons/add_element.png);}
+	&.add_tag {background-image: url(/img/icons/add_tag.png);}
+	&.deactivate {background-image: url(/img/icons/cancel.png);}
+	&.add_query {background-image: url(/img/icons/add.png);}
+}
+
+
+// errors
+.error
+{
+	display: block;
+	background: $error-back;
+	color: $dark;
+	border: 1px solid $error-color;
+	border-radius: 0.5em;
+	padding: $spacing/2 $spacing;
+	margin: $spacing 0 $spacing*2;
+	width: 100%;
+	
+	-webkit-box-shadow: 0px 0px 5px 1px $error-color;
+	-moz-box-shadow: 0px 0px 5px 1px $error-color;
+	box-shadow: 0px 0px 5px 1px $error-color;
+}
+
+.clearfix:after
+{
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+
+section.main
+{
+	padding: $spacing;
+	float: left;
+	
+	.basic &
+	{
+		float: none;
+	}
+}
+

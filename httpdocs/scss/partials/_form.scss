@@ -1,0 +1,113 @@
+label
+{
+	display: block;
+	clear: both;
+	width: 80%;
+	margin-bottom: $spacing;
+	
+	input, textarea, select
+	{
+		width: 70%;
+		float: right;
+		padding: 3px;
+	}
+	select
+	{
+		/* this fixes a bug in Firefox (only tested so far on Linux) that extends the width of the select by the width of the ▼ bit */
+		-moz-box-sizing: border-box;
+	}
+}
+input
+{
+	border: 1px solid $grey;
+	
+	-moz-transition: all 0.5s ease 0s;
+	-o-transition: all 0.5s ease 0s;
+	-webkit-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
+	
+	
+	&[type=submit],&[type=button]
+	{
+		background-repeat: no-repeat;
+
+		&:hover
+		{
+			-webkit-box-shadow: 0px 0px 5px 1px $highlight;
+			-moz-box-shadow: 0px 0px 5px 1px $highlight;
+			box-shadow: 0px 0px 5px 1px $highlight;
+		}
+	}
+	&:focus
+	{
+		-webkit-box-shadow: 0px 0px 5px 1px $highlight;
+		-moz-box-shadow: 0px 0px 5px 1px $highlight;
+		box-shadow: 0px 0px 5px 1px $highlight;
+	}
+	&[readonly]
+	{
+		background-color: $light;
+		color: $dark-grey;
+		
+	}
+}
+
+
+form[name=login]
+{
+	width: 600px;
+	margin: $spacing auto;
+	
+	label
+	{
+		margin: 0 auto;
+		
+		input
+		{
+			width: 50%;
+			float: right;
+			padding: $spacing/2;
+			margin-bottom: $spacing;
+		}
+	}
+	input[type=submit]
+	{
+		background-image: url(/img/icons/dialog-ok-apply.png);
+		background-size: auto 30px;
+		background-position: $spacing center;
+		padding: $spacing;
+		margin: $spacing auto;
+		display: block;
+		width: 400px;
+	}
+}
+
+.filter_form
+{
+	width: 600px;
+	
+	label
+	{
+		display: inline-block;
+		width: 45%;
+		
+		&:nth-child(odd)
+		{
+			margin-right: $spacing*4;
+		}
+		input, select
+		{
+			display: block;
+			float: none;
+			width: 100%;
+		}
+	}
+}
+
+.query
+{
+	margin: $spacing 0;
+	padding: $spacing;
+	background-color: $light-grey;
+	border-radius: $spacing;
+}

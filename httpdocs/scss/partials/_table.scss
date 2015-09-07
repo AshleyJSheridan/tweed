@@ -1,0 +1,27 @@
+table.item_table
+{
+	border-collapse: collapse;
+	border: 1px solid $grey;
+	margin: $spacing 0;
+	
+	th, td
+	{
+		border: 1px solid $grey;
+		padding: $spacing;
+		
+		input
+		{
+			width: 350px;
+			
+			&.short
+			{
+				width: 50px;
+			}
+		}
+	}
+	th
+	{
+		background-color: $dark;
+		color: $light;
+	}
+}

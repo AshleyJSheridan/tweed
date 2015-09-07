@@ -45,7 +45,7 @@ class admin_controller extends base_controller
 						$campaign['created_by'],
 						$campaign['modified_by'],
 						($campaign['force_deactivated'] == 'yes')?'<span class="deactivated">deactivated</span>':((strtotime($campaign['end']) < time() )?'<span class="ended">ended</span>':'<span class="active">active</span>' ),
-						'actions',
+						content::generate_actions('campaign', $campaign['id'], array('edit', 'deactivate') ),
 					);
 				}
 				
@@ -61,6 +61,59 @@ class admin_controller extends base_controller
 				);
 				
 				$this->load_view($params[0], $view_params );
+				break;
+			case 'campaign':
+				if(!isset($params[1]))
+					return false;
+				
+				switch($params[1])
+				{
+					case 'edit':
+						if(!isset($params[2]))
+							return false;
+						
+						$errors = false;
+
+						$campaign_buttons = content::generate_actions($params[1], $params[2], array('save', 'add query'), 'full', 'button');
+						
+						$campaign = content::get_campaign($params[2]);
+
+						// build up the extra elements specifically for the campaign details - not the queries
+						$campaign_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+							'label'=>'Campaign Name',
+							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
+									'value'=>"value=\"{$campaign[0]['name']}\"",
+									'placeholder'=>"placeholder=\"campaign name\"",
+									'name'=>'name'
+								))
+							)
+						);
+						$campaign_html = '';
+						foreach($campaign as $q)
+							$campaign_html .= $q['html'];
+						
+						$view_params = array(
+							'campaign_fields'=>$campaign_html,
+							'campaign_buttons'=>$campaign_buttons,
+							'campaign_details'=>$campaign_details,
+							'scripts'=>array(
+								'/js/cms/campaigns.js'=>10, 
+								'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'=>5,
+							)
+						);
+						
+						if($errors)
+							$view_params['errors'] = $errors;
+						
+						$this->load_view('campaign_edit', $view_params );
+						
+
+						break;
+					case 'deactivate':
+
+						break;
+				}
+				
 				break;
 		}
 	}

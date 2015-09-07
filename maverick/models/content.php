@@ -219,6 +219,58 @@ class content
 		return $campaigns;
 	}
 	
+	static function get_campaign($campaign_id)
+	{
+		$campaign = db::table('campaigns AS c')
+			->leftJoin('queries AS q', array('q.campaign_id', '=', 'c.id') )
+			->where('c.id', '=', db::raw($campaign_id) )
+			->orderBy('c.id')
+			->orderBy('q.id')
+			->get(array('c.id', 'c.name', 'c.url', 'c.start', 'c.end', 'c.force_deactivated', 'q.id AS qid', 'q.type', 'q.content', 'q.item_order') )
+			->fetch();
+
+		foreach($campaign as &$q)
+		{
+			// build the elements to go in the query block
+			$type_options = array();
+			foreach(array('and', 'at', 'from', 'hashtag', 'not', 'or', 'question') as $type)
+			{
+				$type_options[] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_option.php', array(
+					'selected' => ($type == $q['type'])?'selected="selected"':'',
+					'value' => $type,
+					'display_value' => $type,
+				));
+			}
+			$q['type_element'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+				'label'=>'Type',
+				'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php', array(
+						'name' => 'type[]',
+						'values' => implode('', $type_options),
+					))
+				)
+			);
+			$q['content_element'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+				'label'=>'Content',
+				'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
+						'name' => 'content[]',
+						'value' => "value=\"{$q['content']}\"",
+						'placeholder' => 'placeholder="search text"',
+					))
+				)
+			);
+			$q['item_order_element'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_number.php', array(
+				'name' => 'item_order[]',
+				'value' => "value=\"{$q['item_order']}\"",
+			));
+			
+			// build the query block
+			$q['html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'includes/snippets/query.php', $q);
+
+		}
+		
+		return $campaign;
+	}
+	
 	/**
 	 * deals with the creation of action buttons (links) used throughout the CMS to do something
 	 * @param string $section the section, as all links will contain this in their URL
