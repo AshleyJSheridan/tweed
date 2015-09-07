@@ -271,6 +271,34 @@ class content
 		return $campaign;
 	}
 	
+	static function create_new_campaign()
+	{
+		$campaign_name = 'new campaign ' . date("y-m-d H:i");
+		
+		$campaign_id = db::table('campaigns')
+			->insert(array(
+				'name' => $campaign_name,
+				'campaign_hash' => md5($campaign_name),
+				'start' => date("Y-m-d"),
+				'end' => date("Y-m-d"),
+				'created_by'=>$_SESSION['maverick_id'],
+				'modified_by'=>$_SESSION['maverick_id'],
+				'force_deactivated'=>'yes',
+			))
+			->fetch();
+		
+		$query = db::table('queries')
+			->insert(array(
+				'campaign_id' => $campaign_id,
+				'type' => 'and',
+				'content' => 'test',
+				'item_order' => 1,
+			))
+			->fetch();
+		
+		return $campaign_id;
+	}
+
 	/**
 	 * deals with the creation of action buttons (links) used throughout the CMS to do something
 	 * @param string $section the section, as all links will contain this in their URL

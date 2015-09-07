@@ -112,6 +112,11 @@ class admin_controller extends base_controller
 					case 'deactivate':
 
 						break;
+					case 'new_campaign':
+						$campaign_id = content::create_new_campaign();
+						
+						view::redirect('/' . $this->app->get_config('tweed.admin_path') . "/campaign/edit/$campaign_id");
+						break;
 				}
 				
 				break;
