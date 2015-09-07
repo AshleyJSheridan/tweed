@@ -85,6 +85,8 @@ form[name=login] input[type=submit] { background-image: url(/img/icons/dialog-ok
 .filter_form label:nth-child(odd) { margin-right: 40px; }
 .filter_form label input, .filter_form label select { display: block; float: none; width: 100%; }
 
+form.queries { width: 600px; }
+
 .query { margin: 10px 0; padding: 10px; background-color: #dddddd; border-radius: 10px; }
 
 table.item_table { border-collapse: collapse; border: 1px solid #cccccc; margin: 10px 0; }

@@ -12,8 +12,7 @@ class admin_controller extends base_controller
 		
 		$this->app = \maverick\maverick::getInstance();
 		
-		$params = $this->app->controller['args'];
-		$params = $this->clean_params($params); //$this->clean_params($params);
+		$params = $this->clean_params($this->app->controller['args']);
 		$this->nav = view::make('includes/nav')->with('params', $params)->render(false);
 	}
 	
@@ -73,10 +72,19 @@ class admin_controller extends base_controller
 							return false;
 						
 						$errors = false;
+						
+						if(count($_REQUEST))
+						{
+							// update a campaign
+							var_dump($_REQUEST);
+						}
 
 						$campaign_buttons = content::generate_actions($params[1], $params[2], array('save', 'add query'), 'full', 'button');
 						
 						$campaign = content::get_campaign($params[2]);
+						$campaign_html = '';
+						foreach($campaign as $q)
+							$campaign_html .= $q['html'];
 
 						// build up the extra elements specifically for the campaign details - not the queries
 						$campaign_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
@@ -88,16 +96,58 @@ class admin_controller extends base_controller
 								))
 							)
 						);
-						$campaign_html = '';
-						foreach($campaign as $q)
-							$campaign_html .= $q['html'];
+						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+							'label'=>'URL',
+							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
+									'value'=>"value=\"{$campaign[0]['url']}\"",
+									'placeholder'=>"placeholder=\"campaign url\"",
+									'name'=>'url'
+								))
+							)
+						);
+						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+							'label'=>'Start',
+							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_date.php', array(
+									'value'=>"value=\"{$campaign[0]['start']}\"",
+									'placeholder'=>"placeholder=\"start date\"",
+									'name'=>'start'
+								))
+							)
+						);
+						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+							'label'=>'End',
+							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_date.php', array(
+									'value'=>"value=\"{$campaign[0]['end']}\"",
+									'placeholder'=>"placeholder=\"end date\"",
+									'name'=>'end'
+								))
+							)
+						);
+						$deactivated = array();
+						foreach(array('yes', 'no') as $d)
+						{
+							$deactivated[] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_option.php', array(
+								'selected' => ($d == $campaign[0]['force_deactivated'])?'selected="selected"':'',
+								'value' => $d,
+								'display_value' => $d,
+							));
+						}
+						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+							'label'=>'Force Deactivated?',
+							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php', array(
+									'values'=> implode('', $deactivated),
+									'name'=>'force_deactivated',
+								))
+							)
+						);
+						
 						
 						$view_params = array(
 							'campaign_fields'=>$campaign_html,
 							'campaign_buttons'=>$campaign_buttons,
 							'campaign_details'=>$campaign_details,
 							'scripts'=>array(
-								'/js/cms/campaigns.js'=>10, 
+								'/js/campaigns.js'=>10, 
 								'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'=>5,
 							)
 						);
