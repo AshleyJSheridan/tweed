@@ -345,6 +345,17 @@ class content
 		
 		return $campaign_id;
 	}
+	
+	static function set_campaign_status($campaign_id, $change)
+	{
+		$change = ($change == 'deactivate')?'yes':'no';
+		
+		$updated = db::table('campaigns')
+			->where('id', '=', db::raw($campaign_id) )
+			->update(array('force_deactivated' => $change) );
+		
+		return (bool)$updated;
+	}
 
 	/**
 	 * deals with the creation of action buttons (links) used throughout the CMS to do something

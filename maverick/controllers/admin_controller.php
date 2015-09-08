@@ -34,6 +34,12 @@ class admin_controller extends base_controller
 				$data = array();
 				foreach($campaigns as $campaign)
 				{
+					$campaign_actions = array('edit');
+					if($campaign['force_deactivated'] == 'no' && strtotime($campaign['end']) > time())
+						$campaign_actions[] = 'deactivate';
+					if($campaign['force_deactivated'] == 'yes' && strtotime($campaign['end']) > time())
+						$campaign_actions[] = 'reactivate';
+					
 					$data[] = array(
 						$campaign['id'],
 						$campaign['name'],
@@ -44,7 +50,7 @@ class admin_controller extends base_controller
 						$campaign['created_by'],
 						$campaign['modified_by'],
 						($campaign['force_deactivated'] == 'yes')?'<span class="deactivated">deactivated</span>':((strtotime($campaign['end']) < time() )?'<span class="ended">ended</span>':'<span class="active">active</span>' ),
-						content::generate_actions('campaign', $campaign['id'], array('edit', 'deactivate') ),
+						content::generate_actions('campaign', $campaign['id'], $campaign_actions ),
 					);
 				}
 				
@@ -175,14 +181,23 @@ class admin_controller extends base_controller
 							return false; // just bomb out if people are fucking with the URL
 
 						break;
-					case 'deactivate':
-
-						break;
 					case 'new_campaign':
 						$campaign_id = content::create_new_campaign();
 						
 						view::redirect('/' . $this->app->get_config('tweed.admin_path') . "/campaign/edit/$campaign_id");
 						break;
+					case 'deactivate':
+					case 'reactivate':
+						// just bomb out if people are fucking with the URL
+						if(empty($params[2]) || !intval($params[2]) )
+							return false;
+						
+						content::set_campaign_status($params[2], $params[1] );
+						
+						view::redirect('/' . $this->app->get_config('tweed.admin_path') );
+						
+						break;
+					
 				}
 				
 				break;

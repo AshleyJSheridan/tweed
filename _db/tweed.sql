@@ -24,12 +24,17 @@ CREATE TABLE `campaigns` (
   `start` date NOT NULL,
   `end` date NOT NULL,
   `last_used` datetime NOT NULL,
+  `created_by` int(10) unsigned NOT NULL,
+  `modified_by` int(10) unsigned NOT NULL,
+  `force_deactivated` enum('yes','no') NOT NULL DEFAULT 'no',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Data for the table `campaigns` */
 
-insert  into `campaigns`(`id`,`name`,`url`,`campaign_hash`,`start`,`end`,`last_used`) values (1,'sxsw test','','d6ec72e76c7288ed75e86be78372b708','2015-08-28','2015-09-28','0000-00-00 00:00:00');
+insert  into `campaigns`(`id`,`name`,`url`,`campaign_hash`,`start`,`end`,`last_used`,`created_by`,`modified_by`,`force_deactivated`) values (1,'sxsw test','','15c4a855038930f537210041fecb15a6','2015-08-28','2015-09-28','0000-00-00 00:00:00',1,1,'no');
+insert  into `campaigns`(`id`,`name`,`url`,`campaign_hash`,`start`,`end`,`last_used`,`created_by`,`modified_by`,`force_deactivated`) values (3,'new campaign 15-09-07 14:49','','cc469697fa49d0e39bd1fdd978469f04','2015-09-07','2015-09-07','0000-00-00 00:00:00',1,1,'no');
+insert  into `campaigns`(`id`,`name`,`url`,`campaign_hash`,`start`,`end`,`last_used`,`created_by`,`modified_by`,`force_deactivated`) values (4,'new campaign 15-09-07 14:50','','e00b0cb494ec367e80c02a076da1893e','2015-09-07','2015-10-07','0000-00-00 00:00:00',1,1,'yes');
 
 /*Table structure for table `queries` */
 
@@ -42,12 +47,16 @@ CREATE TABLE `queries` (
   `content` varchar(50) NOT NULL,
   `item_order` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 /*Data for the table `queries` */
 
-insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (1,1,'hashtag','sxsw',0);
-insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (2,1,'not','2016',0);
+insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (1,1,'hashtag','sxsw',1);
+insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (2,1,'not','2016',2);
+insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (24,4,'and','test',1);
+insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (25,4,'and','test2',2);
+insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (26,4,'and','test3',3);
+insert  into `queries`(`id`,`campaign_id`,`type`,`content`,`item_order`) values (27,3,'and','test',1);
 
 /*Table structure for table `tweet_entities` */
 
@@ -535,6 +544,25 @@ insert  into `tweets`(`id`,`campaign_id`,`iso_lang`,`user_id`,`user_name`,`user_
 insert  into `tweets`(`id`,`campaign_id`,`iso_lang`,`user_id`,`user_name`,`user_screen_name`,`user_location`,`tweet_id`,`created_at`,`content`,`source`,`in_reply_to_id`,`in_reply_to_screen_name`,`retweet_count`,`approved`) values (231,1,'en','3003855911','Stacy Markham','AustinpalStacy','','637100590179463168','2015-08-28 04:13:12','mio_austintexas: .NewLeafActive ~Thx for the follow. I tweet abt #ATX #austin #dogs #sxsw #art #church #education #hiking &amp; more. Keep foll…','<a href=\"http://ifttt.com\" rel=\"nofollow\">IFTTT</a>','0',NULL,0,'no');
 insert  into `tweets`(`id`,`campaign_id`,`iso_lang`,`user_id`,`user_name`,`user_screen_name`,`user_location`,`tweet_id`,`created_at`,`content`,`source`,`in_reply_to_id`,`in_reply_to_screen_name`,`retweet_count`,`approved`) values (232,1,'en','2980473756','SchooLinks','SchooLinks_News','','637100322960314368','2015-08-28 04:12:08','@FMichaelCarmody By voting for us, you\'ll help millions of underprivileged students succeed. #SXSW  http://t.co/jYfzPSXUOJ','<a href=\"http://wikihikma.com\" rel=\"nofollow\">Wikihikma</a>','20554438','FMichaelCarmody',0,'no');
 insert  into `tweets`(`id`,`campaign_id`,`iso_lang`,`user_id`,`user_name`,`user_screen_name`,`user_location`,`tweet_id`,`created_at`,`content`,`source`,`in_reply_to_id`,`in_reply_to_screen_name`,`retweet_count`,`approved`) values (233,1,'en','13027572','Kissmetrics','Kissmetrics','San Francisco, CA','637100101731786752','2015-08-28 04:11:15','Vote for this #SXSW panel to hear 2 #womenintech leaders share their story and give concrete advice http://t.co/iXhzISXrVO','<a href=\"http://bufferapp.com\" rel=\"nofollow\">Buffer</a>','0',NULL,4,'no');
+
+/*Table structure for table `users` */
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `email` varchar(250) NOT NULL,
+  `forename` varchar(100) DEFAULT NULL,
+  `surname` varchar(100) DEFAULT NULL,
+  `admin` enum('yes','no') NOT NULL DEFAULT 'no',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+/*Data for the table `users` */
+
+insert  into `users`(`id`,`username`,`password`,`email`,`forename`,`surname`,`admin`) values (1,'admin','e3274be5c857fb42ab72d786e281b4b8','ash@ashleysheridan.co.uk','Ashley','Sheridan','yes');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
