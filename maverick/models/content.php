@@ -271,6 +271,53 @@ class content
 		return $campaign;
 	}
 	
+	static function update_campaign($campaign_id)
+	{
+		$updated = db::table('campaigns')
+			->where('id', '=', db::raw($campaign_id) )
+			->update(array(
+				'name' => db::raw($_REQUEST['name']),
+				'url' => db::raw($_REQUEST['url']),
+				'start' => db::raw($_REQUEST['start']),
+				'end' => db::raw($_REQUEST['end']),
+				'force_deactivated' => db::raw($_REQUEST['force_deactivated']),
+				'modified_by' => $_SESSION['maverick_id'],
+			));
+		
+		if($updated)
+		{
+			// remove the existing campaign queries for this campaign and add in the new ones
+			// this is easier than trying to update existing ones and accounting for any change in the number of queries
+			
+			$deleted = db::table('queries')
+				->where('campaign_id', '=', db::raw($campaign_id) )
+				->delete();
+			
+			$query_data = array();
+			
+			for($i=0; $i<count($_REQUEST['type']); $i++ )
+			{
+				// ignore anything that isn't a valid type
+				if(
+					in_array($_REQUEST['type'][$i], array('and', 'at', 'from', 'hashtag', 'not', 'or', 'question') )
+					&& !empty($_REQUEST['content'][$i])
+					&& isset($_REQUEST['item_order'][$i])
+					&& intval($_REQUEST['item_order'][$i])
+				)
+				{
+					$query_data[] = array(
+						'campaign_id' => $campaign_id,
+						'type' => $_REQUEST['type'][$i],
+						'content' => $_REQUEST['content'][$i],
+						'item_order' => $_REQUEST['item_order'][$i],
+					);
+				}
+			}
+			$insert = db::table('queries')
+				->insert($query_data);
+		}
+	}
+	
 	static function create_new_campaign()
 	{
 		$campaign_name = 'new campaign ' . date("y-m-d H:i");

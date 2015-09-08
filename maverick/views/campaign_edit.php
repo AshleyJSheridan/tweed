@@ -2,11 +2,14 @@
 
 <form class="queries" method="post">
 
-	<div class="details">
-		{{campaign_details}}
-	</div>
+	{{errors}}
 	
-	<div class="query_fields">{{campaign_fields}}</div>
+	<fieldset class="details">
+		<legend>Main Details</legend>
+		{{campaign_details}}
+	</fieldset>
+	
+	<fieldset class="query_fields">{{campaign_fields}}</fieldset>
 </form>
 
 {{campaign_buttons}}

@@ -24,4 +24,17 @@ table.item_table
 		background-color: $dark;
 		color: $light;
 	}
+	
+	.deactivated
+	{
+		color: $error-color;
+	}
+	.active
+	{
+		color: $ok-color;
+	}
+	.ended
+	{
+		color: $warn-color;
+	}
 }

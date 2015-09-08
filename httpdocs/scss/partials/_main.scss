@@ -200,3 +200,15 @@ section.main
 	}
 }
 
+.details
+{
+	margin: $spacing 0;
+	padding: $spacing;
+	border: 1px solid $grey;
+	border-radius: $spacing;
+}
+.query_fields
+{
+	border: 0px none;
+	padding: 0;
+}

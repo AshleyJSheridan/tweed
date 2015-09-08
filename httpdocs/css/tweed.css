@@ -65,6 +65,10 @@ a.action.add_query, button.action.add_query, input[type=submit].action.add_query
 section.main { padding: 10px; float: left; }
 .basic section.main { float: none; }
 
+.details { margin: 10px 0; padding: 10px; border: 1px solid #cccccc; border-radius: 10px; }
+
+.query_fields { border: 0px none; padding: 0; }
+
 label { display: block; clear: both; width: 80%; margin-bottom: 10px; }
 label input, label textarea, label select { width: 70%; float: right; padding: 3px; }
 label select { /* this fixes a bug in Firefox (only tested so far on Linux) that extends the width of the select by the width of the ▼ bit */ -moz-box-sizing: border-box; }
@@ -94,3 +98,6 @@ table.item_table th, table.item_table td { border: 1px solid #cccccc; padding: 1
 table.item_table th input, table.item_table td input { width: 350px; }
 table.item_table th input.short, table.item_table td input.short { width: 50px; }
 table.item_table th { background-color: #333333; color: #eeeeee; }
+table.item_table .deactivated { color: red; }
+table.item_table .active { color: #008800; }
+table.item_table .ended { color: #ff8800; }

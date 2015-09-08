@@ -68,95 +68,111 @@ class admin_controller extends base_controller
 				switch($params[1])
 				{
 					case 'edit':
-						if(!isset($params[2]))
-							return false;
-						
 						$errors = false;
 						
-						if(count($_REQUEST))
+						if(isset($params[2]) && intval($params[2]) )
 						{
-							// update a campaign
-							var_dump($_REQUEST);
-						}
+							if(count($_REQUEST))
+							{
+								// validate what we can
+								$rules = array(
+									'name' => array('required'),
+									'url' => 'url',
+									'start' => array('required', 'regex:/\d{4}-\d\d-\d\d/'),
+									'end' => array('required', 'regex:/\d{4}-\d\d-\d\d/'),
+									'force_deactivated' => array('required', 'in:yes:no'),
+								);
+								validator::make($rules);
+								
+								if(validator::run() )
+								{
+									// update a campaign
+									content::update_campaign($params[2]);
+								}
+								else
+									$errors = $this->get_all_errors_as_string(null, array('<span class="error">', '</span>') );
+							}
 
-						$campaign_buttons = content::generate_actions($params[1], $params[2], array('save', 'add query'), 'full', 'button');
-						
-						$campaign = content::get_campaign($params[2]);
-						$campaign_html = '';
-						foreach($campaign as $q)
-							$campaign_html .= $q['html'];
+							$campaign_buttons = content::generate_actions($params[1], $params[2], array('save', 'add query'), 'full', 'button');
 
-						// build up the extra elements specifically for the campaign details - not the queries
-						$campaign_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
-							'label'=>'Campaign Name',
-							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
-									'value'=>"value=\"{$campaign[0]['name']}\"",
-									'placeholder'=>"placeholder=\"campaign name\"",
-									'name'=>'name'
-								))
-							)
-						);
-						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
-							'label'=>'URL',
-							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
-									'value'=>"value=\"{$campaign[0]['url']}\"",
-									'placeholder'=>"placeholder=\"campaign url\"",
-									'name'=>'url'
-								))
-							)
-						);
-						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
-							'label'=>'Start',
-							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_date.php', array(
-									'value'=>"value=\"{$campaign[0]['start']}\"",
-									'placeholder'=>"placeholder=\"start date\"",
-									'name'=>'start'
-								))
-							)
-						);
-						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
-							'label'=>'End',
-							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_date.php', array(
-									'value'=>"value=\"{$campaign[0]['end']}\"",
-									'placeholder'=>"placeholder=\"end date\"",
-									'name'=>'end'
-								))
-							)
-						);
-						$deactivated = array();
-						foreach(array('yes', 'no') as $d)
-						{
-							$deactivated[] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_option.php', array(
-								'selected' => ($d == $campaign[0]['force_deactivated'])?'selected="selected"':'',
-								'value' => $d,
-								'display_value' => $d,
-							));
+							$campaign = content::get_campaign($params[2]);
+							$campaign_html = '';
+							foreach($campaign as $q)
+								$campaign_html .= $q['html'];
+
+							// build up the extra elements specifically for the campaign details - not the queries
+							$campaign_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+								'label'=>'Campaign Name',
+								'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
+										'value'=>"value=\"{$campaign[0]['name']}\"",
+										'placeholder'=>"placeholder=\"campaign name\"",
+										'name'=>'name'
+									))
+								)
+							);
+							$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+								'label'=>'URL',
+								'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
+										'value'=>"value=\"{$campaign[0]['url']}\"",
+										'placeholder'=>"placeholder=\"campaign url\"",
+										'name'=>'url'
+									))
+								)
+							);
+							$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+								'label'=>'Start',
+								'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_date.php', array(
+										'value'=>"value=\"{$campaign[0]['start']}\"",
+										'placeholder'=>"placeholder=\"start date\"",
+										'name'=>'start'
+									))
+								)
+							);
+							$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+								'label'=>'End',
+								'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_date.php', array(
+										'value'=>"value=\"{$campaign[0]['end']}\"",
+										'placeholder'=>"placeholder=\"end date\"",
+										'name'=>'end'
+									))
+								)
+							);
+							$deactivated = array();
+							foreach(array('yes', 'no') as $d)
+							{
+								$deactivated[] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_option.php', array(
+									'selected' => ($d == $campaign[0]['force_deactivated'])?'selected="selected"':'',
+									'value' => $d,
+									'display_value' => $d,
+								));
+							}
+							$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+								'label'=>'Force Deactivated?',
+								'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php', array(
+										'values'=> implode('', $deactivated),
+										'name'=>'force_deactivated',
+									))
+								)
+							);
+
+
+							$view_params = array(
+								'campaign_fields'=>$campaign_html,
+								'campaign_buttons'=>$campaign_buttons,
+								'campaign_details'=>$campaign_details,
+								'scripts'=>array(
+									'/js/campaigns.js'=>10, 
+									'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'=>5,
+								)
+							);
+
+							if($errors)
+								$view_params['errors'] = $errors;
+
+							$this->load_view('campaign_edit', $view_params );
 						}
-						$campaign_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
-							'label'=>'Force Deactivated?',
-							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php', array(
-									'values'=> implode('', $deactivated),
-									'name'=>'force_deactivated',
-								))
-							)
-						);
-						
-						
-						$view_params = array(
-							'campaign_fields'=>$campaign_html,
-							'campaign_buttons'=>$campaign_buttons,
-							'campaign_details'=>$campaign_details,
-							'scripts'=>array(
-								'/js/campaigns.js'=>10, 
-								'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'=>5,
-							)
-						);
-						
-						if($errors)
-							$view_params['errors'] = $errors;
-						
-						$this->load_view('campaign_edit', $view_params );
-						
+						else
+							return false; // just bomb out if people are fucking with the URL
 
 						break;
 					case 'deactivate':
@@ -275,5 +291,25 @@ class admin_controller extends base_controller
 		asort($assets);
 		
 		return $assets;
+	}
+	
+	/**
+	 * takes an array of error messages and converts it into a single string for direct use with the templates
+	 * @todo consider porting this back into the validator class as it could be quite useful there
+	 * @param null|string $field if not null, this will retrive all the errors for the specified field
+	 * @param array $wrapper this should be a 2-dimensional array containing a before and after wrapper for an error - although either or both of the elements can be a blank string
+	 * @return string
+	 */
+	private function get_all_errors_as_string($field=null, $wrapper=array() )
+	{
+		$errors_html = '';
+		$errors = \validator::get_all_errors(null, array('<span class="error">', '</span>'));
+		
+		foreach($errors as $error)
+		{
+			$errors_html .= implode('', $error);
+		}
+		
+		return $errors_html;
 	}
 }
