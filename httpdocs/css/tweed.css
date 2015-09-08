@@ -69,6 +69,9 @@ section.main { padding: 10px; float: left; }
 
 .query_fields { border: 0px none; padding: 0; }
 
+.query { position: relative; }
+.query .action.delete { position: absolute; top: 10px; right: 10px; }
+
 label { display: block; clear: both; width: 80%; margin-bottom: 10px; }
 label input, label textarea, label select { width: 70%; float: right; padding: 3px; }
 label select { /* this fixes a bug in Firefox (only tested so far on Linux) that extends the width of the select by the width of the ▼ bit */ -moz-box-sizing: border-box; }

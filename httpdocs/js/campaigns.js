@@ -19,6 +19,23 @@
 				$('.action.save').on('click', function(){
 					$('form.queries').submit();
 				});
+				
+				// delete button
+				$('.queries').on('click', '.action.delete', function(e){
+					e.preventDefault();
+					
+					// only allow a query to be deleted if there is at least one for a campaign
+					if($('.query').length > 1)
+					{
+						$(this).parent().remove();
+						
+						// update the order for this query item
+						$('.query').each(function(i){
+							$('input[name=item_order\\[\\]]', $(this) ).attr('value', (i+1) );
+						});
+					}
+
+				});
 			}
 		}
 	};

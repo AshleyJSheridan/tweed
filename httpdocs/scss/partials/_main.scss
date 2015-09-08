@@ -212,3 +212,14 @@ section.main
 	border: 0px none;
 	padding: 0;
 }
+.query
+{
+	position: relative;
+	
+	.action.delete
+	{
+		position: absolute;
+		top: $spacing;
+		right: $spacing;
+	}
+}
