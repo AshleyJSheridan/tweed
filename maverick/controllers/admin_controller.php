@@ -201,9 +201,57 @@ class admin_controller extends base_controller
 				}
 				
 				break;
+			case 'tweets':
+				// todo: generate fetch parameters based on the passed in filter options
+				$tweets = content::get_tweets(null, 10, 1, null, null, null, null, null, null, null);
+
+				$headers = '["ID #","Campaign","Lang","User","Sent At","Retweet?","Reply?","Approved?","Content","Actions"]';
+				$data = array();
+				foreach($tweets as $tweet)
+				{
+					$tweet_actions = array( ( ($tweet['approved'] == 'no')?'approve':'unapprove' ) );
+					
+					$data[] = array(
+						$tweet['id'],
+						$tweet['campaign_name'],
+						$tweet['iso_lang'],
+						$tweet['user_screen_name'],
+						date("l, jS M, Y", strtotime($tweet['created_at']) ),
+						(intval($tweet['retweet_count']) )?'yes':'no',
+						(intval($tweet['in_reply_to_id']) )?'yes':'no',
+						$tweet['approved'],
+						$tweet['content'],
+						content::generate_actions('tweets', $tweet['id'], $tweet_actions ),
+					);
+				}
+				
+				$tweets_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
+				$tweets_table->class = 'item_table tweets';
+
+				$view_params = array(
+					'tweets_table' => $tweets_table->render(),
+					'scripts'=>array(
+						'/js/tweets.js'=>10, 
+					)
+				);
+				
+				$this->load_view('tweets', $view_params );
+				break;
 		}
 	}
 	
+	function update_tweet_status($params)
+	{
+		$tweet_id = intval($params[1]);
+
+		if(!$tweet_id || !in_array($params[0], array('approve', 'unapprove') ) )
+			return false;
+		
+		$approved = ($params[0] == 'approve')?'yes':'no';
+		
+		echo (content::update_tweet_status($tweet_id, $approved) )?'ok':'error';
+			
+	}
 	
 	function login()
 	{
@@ -243,7 +291,7 @@ class admin_controller extends base_controller
 	{
 		if(!$params)
 			return false;
-		
+
 		foreach($params as $key => &$param)
 		{
 			$param = trim($param, '/');

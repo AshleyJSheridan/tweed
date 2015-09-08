@@ -3,6 +3,7 @@ $app = \maverick\maverick::getInstance();
 
 $nav = array(
 	'' => 'Home',
+	'/tweets' => 'Tweets',
 );
 
 if(isset($_SESSION['maverick_login']) && $_SESSION['maverick_login'])

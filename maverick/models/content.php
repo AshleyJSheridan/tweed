@@ -128,65 +128,82 @@ class content
 	{
 		$app = \maverick\maverick::getInstance();
 		
-		$campaign = db::table('campaigns')
-			->where('campaign_hash', '=', db::raw($campaign_hash))
-			->get()
-			->fetch();
-		
-		if(!empty($campaign[0]['id']) )
+		// this check makes sure that the campaign hash sent belongs to a campaign
+		// if null is sent then this will get all tweets as it's a call from the admin section
+		if(!is_null($campaign_hash) )
 		{
-			$campaign_id = $campaign[0]['id'];
-			$total = ($total)?$total:$app->get_config('twitter.total');
-			$offset = ($page)?($page-1)*$total:0;
+			$campaign = db::table('campaigns')
+				->where('campaign_hash', '=', db::raw($campaign_hash))
+				->get()
+				->fetch();
 			
-			$tweets = db::table('tweets')
-				->where('campaign_id', '=', db::raw($campaign_id) )
-				->limit($total, $offset)
-				->orderBy('created_at', 'desc')
-				;
-			
-			// filter by any additional parameters which are not null or false
-			if($lang)
-				$tweets = $tweets->where('iso_lang', '=', db::raw ($lang) );
-			if($screen_name)
-				$tweets = $tweets->where('user_screen_name', '=', db::raw ($screen_name) );
-			if($since)
-				$tweets = $tweets->where('created_at', '>', db::raw (date("Y-m-d H:i:s", $since) ) );
-			if($before)
-				$tweets = $tweets->where('created_at', '<', db::raw (date("Y-m-d H:i:s", $before) ) );
-			if($reply)
-			{
-				switch($reply)
-				{
-					case 'hide':
-						$tweets = $tweets->where('in_reply_to_id', '=', db::raw('0') );
-						break;
-					case 'only':
-						$tweets = $tweets->where('in_reply_to_id', '>', db::raw('0') );
-						break;
-				}
-			}
-			if($retweet)
-			{
-				switch($retweet)
-				{
-					case 'hide':
-						$tweets = $tweets->where('retweet_count', '=', db::raw('0') );
-						break;
-					case 'only':
-						$tweets = $tweets->where('retweet_count', '>', db::raw('0') );
-						break;
-				}
-			}
-
-			
-			// get the tweets
-			$tweets = $tweets->get()->fetch();
-			
-			return $tweets;
+			if(empty($campaign[0]['id']))
+				return 'Campaign does not exist';
 		}
-		else
-			return 'Campaign does not exist';
+		
+		$total = ($total)?$total:$app->get_config('twitter.total');
+		$offset = ($page)?($page-1)*$total:0;
+		$tweets = db::table('tweets AS t')
+			->leftJoin('campaigns AS c', array('c.id', '=', 't.campaign_id') )
+			//->where('campaign_id', '=', db::raw($campaign[0]['id']) )
+			->limit($total, $offset)
+			->orderBy('created_at', 'desc')
+			;
+		
+		// if the campaign hash was sent and maps to a valid id, then make that part of the where clause
+		if(!empty($campaign[0]['id']) )
+			$tweets = $tweets->where('campaign_id', '=', db::raw($campaign[0]['id']) );
+		
+
+		// filter by any additional parameters which are not null or false
+		if($lang)
+			$tweets = $tweets->where('iso_lang', '=', db::raw ($lang) );
+		if($screen_name)
+			$tweets = $tweets->where('user_screen_name', '=', db::raw ($screen_name) );
+		if($since)
+			$tweets = $tweets->where('created_at', '>', db::raw (date("Y-m-d H:i:s", $since) ) );
+		if($before)
+			$tweets = $tweets->where('created_at', '<', db::raw (date("Y-m-d H:i:s", $before) ) );
+		if($reply)
+		{
+			switch($reply)
+			{
+				case 'hide':
+					$tweets = $tweets->where('in_reply_to_id', '=', db::raw('0') );
+					break;
+				case 'only':
+					$tweets = $tweets->where('in_reply_to_id', '>', db::raw('0') );
+					break;
+			}
+		}
+		if($retweet)
+		{
+			switch($retweet)
+			{
+				case 'hide':
+					$tweets = $tweets->where('retweet_count', '=', db::raw('0') );
+					break;
+				case 'only':
+					$tweets = $tweets->where('retweet_count', '>', db::raw('0') );
+					break;
+			}
+		}
+
+
+		// get the tweets
+		$tweets = $tweets->get(array('t.*', 'c.name AS campaign_name'))->fetch();
+
+		return $tweets;
+		
+	}
+	
+	static function update_tweet_status($tweet_id, $approved)
+	{
+		$updated = db::table('tweets')
+			->where('id', '=', db::raw($tweet_id) )
+			->update(array('approved'=>$approved) );
+		
+		return (bool)$updated;
 	}
 	
 	/**

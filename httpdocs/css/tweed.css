@@ -18,17 +18,13 @@ header nav { display: block; }
 header nav a { color: #eeeeee; text-decoration: none; text-transform: uppercase; padding: 60px 5px 5px; display: block; background-repeat: no-repeat; background-position: center 10px; text-align: center; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
 header nav a:hover, header nav a.active { background-color: #0d80b9; }
 header nav a.home { background-image: url(/img/icons/home.png); }
-header nav a.forms { background-image: url(/img/icons/forms.png); }
-header nav a.media { background-image: url(/img/icons/media.png); }
-header nav a.pages { background-image: url(/img/icons/pages.png); }
-header nav a.tags { background-image: url(/img/icons/tags.png); }
+header nav a.tweets { background-image: url(/img/icons/tweets.png); }
 header nav a.users { background-image: url(/img/icons/users.png); }
 header nav a.logout { background-image: url(/img/icons/logout.png); }
 header nav a.logs { background-image: url(/img/icons/logs.png); }
-header nav a.cultures { background-image: url(/img/icons/cultures.png); }
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
-a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; font-family: "Lato", Arial, Verdana, sans-serif; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; font-family: "Lato", Arial, Verdana, sans-serif; outline: none; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
 a.action.small, button.action.small, input[type=submit].action.small { width: 15px; height: 15px; margin-bottom: 0; background-size: 18px auto; float: none; }
 a.action.full, button.action.full, input[type=submit].action.full { width: 140px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; text-align: center; }
 a.action:hover, button.action:hover, input[type=submit].action:hover { background-color: #0d80b9; color: #eeeeee; }
@@ -58,6 +54,8 @@ a.action.add_tag, button.action.add_tag, input[type=submit].action.add_tag { bac
 a.action.deactivate, button.action.deactivate, input[type=submit].action.deactivate { background-image: url(/img/icons/cancel.png); }
 a.action.reactivate, button.action.reactivate, input[type=submit].action.reactivate { background-image: url(/img/icons/restore.png); }
 a.action.add_query, button.action.add_query, input[type=submit].action.add_query { background-image: url(/img/icons/add.png); }
+a.action.approve, button.action.approve, input[type=submit].action.approve { background-image: url(/img/icons/dialog-ok-apply.png); }
+a.action.unapprove, button.action.unapprove, input[type=submit].action.unapprove { background-image: url(/img/icons/cancel.png); }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin: 10px 0 20px; width: 100%; -webkit-box-shadow: 0px 0px 5px 1px red; -moz-box-shadow: 0px 0px 5px 1px red; box-shadow: 0px 0px 5px 1px red; }
 
@@ -102,6 +100,7 @@ table.item_table th, table.item_table td { border: 1px solid #cccccc; padding: 1
 table.item_table th input, table.item_table td input { width: 350px; }
 table.item_table th input.short, table.item_table td input.short { width: 50px; }
 table.item_table th { background-color: #333333; color: #eeeeee; }
+table.item_table.tweets th, table.item_table.tweets td { max-width: 400px; }
 table.item_table .deactivated { color: red; }
 table.item_table .active { color: #008800; }
 table.item_table .ended { color: #ff8800; }

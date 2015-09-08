@@ -68,14 +68,10 @@ header
 			}
 			
 			&.home {background-image: url(/img/icons/home.png);}
-			&.forms {background-image: url(/img/icons/forms.png);}
-			&.media {background-image: url(/img/icons/media.png);}
-			&.pages {background-image: url(/img/icons/pages.png);}
-			&.tags {background-image: url(/img/icons/tags.png);}
+			&.tweets {background-image: url(/img/icons/tweets.png);}
 			&.users {background-image: url(/img/icons/users.png);}
 			&.logout {background-image: url(/img/icons/logout.png);}
 			&.logs {background-image: url(/img/icons/logs.png);}
-			&.cultures {background-image: url(/img/icons/cultures.png);}
 		}
 	}
 	h1
@@ -103,6 +99,8 @@ a.action, button.action, input[type=submit].action
 	border-radius: 0.5em;
 	margin-right: $spacing;
 	font-family: $body-font;
+	outline: none;
+	
 
 	-moz-transition: all 0.5s ease 0s;
 	-o-transition: all 0.5s ease 0s;
@@ -160,6 +158,8 @@ a.action, button.action, input[type=submit].action
 	&.deactivate {background-image: url(/img/icons/cancel.png);}
 	&.reactivate {background-image: url(/img/icons/restore.png);}
 	&.add_query {background-image: url(/img/icons/add.png);}
+	&.approve {background-image: url(/img/icons/dialog-ok-apply.png);}
+	&.unapprove {background-image: url(/img/icons/cancel.png);}
 }
 
 
