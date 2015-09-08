@@ -1,1 +1,3 @@
+{{errors}}
+
 {{tweets_table}}

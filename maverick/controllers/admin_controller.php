@@ -202,28 +202,36 @@ class admin_controller extends base_controller
 				
 				break;
 			case 'tweets':
+				$errors = false;
 				// todo: generate fetch parameters based on the passed in filter options
+
 				$tweets = content::get_tweets(null, 10, 1, null, null, null, null, null, null, null);
 
 				$headers = '["ID #","Campaign","Lang","User","Sent At","Retweet?","Reply?","Approved?","Content","Actions"]';
 				$data = array();
-				foreach($tweets as $tweet)
+
+				if(is_array($tweets) )
 				{
-					$tweet_actions = array( ( ($tweet['approved'] == 'no')?'approve':'unapprove' ) );
-					
-					$data[] = array(
-						$tweet['id'],
-						$tweet['campaign_name'],
-						$tweet['iso_lang'],
-						$tweet['user_screen_name'],
-						date("l, jS M, Y", strtotime($tweet['created_at']) ),
-						(intval($tweet['retweet_count']) )?'yes':'no',
-						(intval($tweet['in_reply_to_id']) )?'yes':'no',
-						$tweet['approved'],
-						$tweet['content'],
-						content::generate_actions('tweets', $tweet['id'], $tweet_actions ),
-					);
+					foreach($tweets as $tweet)
+					{
+						$tweet_actions = array( ( ($tweet['approved'] == 'no')?'approve':'unapprove' ) );
+
+						$data[] = array(
+							$tweet['id'],
+							$tweet['campaign_name'],
+							$tweet['iso_lang'],
+							$tweet['user_screen_name'],
+							date("l, jS M, Y", strtotime($tweet['created_at']) ),
+							(intval($tweet['retweet_count']) )?'yes':'no',
+							(intval($tweet['in_reply_to_id']) )?'yes':'no',
+							$tweet['approved'],
+							$tweet['content'],
+							content::generate_actions('tweets', $tweet['id'], $tweet_actions ),
+						);
+					}
 				}
+				else
+					$errors = "<span class=\"error\">$tweets</span>";
 				
 				$tweets_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 				$tweets_table->class = 'item_table tweets';
@@ -234,6 +242,9 @@ class admin_controller extends base_controller
 						'/js/tweets.js'=>10, 
 					)
 				);
+				
+				if($errors)
+					$view_params['errors'] = $errors;
 				
 				$this->load_view('tweets', $view_params );
 				break;
