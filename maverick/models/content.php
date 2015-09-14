@@ -146,7 +146,7 @@ class content
 		$tweets = db::table('tweets AS t')
 			->leftJoin('campaigns AS c', array('c.id', '=', 't.campaign_id') )
 			//->where('campaign_id', '=', db::raw($campaign[0]['id']) )
-			->limit($total, $offset)
+			//->limit($total, $offset)
 			->orderBy('created_at', 'desc')
 			;
 		
@@ -159,7 +159,7 @@ class content
 		if($lang)
 			$tweets = $tweets->where('iso_lang', '=', db::raw ($lang) );
 		if($screen_name)
-			$tweets = $tweets->where('user_screen_name', '=', db::raw ($screen_name) );
+			$tweets = $tweets->whereLike('user_screen_name', db::raw ($screen_name) );
 		if($since)
 			$tweets = $tweets->where('created_at', '>', db::raw (date("Y-m-d H:i:s", $since) ) );
 		if($before)
@@ -192,7 +192,7 @@ class content
 
 		// get the tweets
 		$tweets = $tweets->get(array('t.*', 'c.name AS campaign_name'))->fetch();
-
+		
 		return $tweets;
 		
 	}
@@ -234,6 +234,15 @@ class content
 			;
 		
 		return $campaigns;
+	}
+	
+	static function get_languages()
+	{
+		$languages = db::table('tweets')
+			->get(array('DISTINCT(iso_lang)'))
+			->fetch();
+		
+		return $languages;
 	}
 	
 	static function get_campaign($campaign_id)

@@ -20,7 +20,7 @@ class query
 	private $limit;
 	
 	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=');
-	private $where_conditions = array('IS', 'IS NOT');
+	private $where_conditions = array('IS', 'IS NOT', 'LIKE');
 	private $where_internal_conditions = array('IN', 'NOT IN');
 
 	private $queries = array();
@@ -202,6 +202,15 @@ class query
 			return $q;
 		
 		$q->add_where($condition, $field, $value);
+		
+		return $q;
+	}
+	
+	public static function whereLike($field, $value)
+	{
+		$q = query::getInstance();
+		
+		$q->add_where('LIKE', $field, "%$value%");
 		
 		return $q;
 	}
@@ -626,7 +635,7 @@ class query
 				$where_string .= $wheres[$i]['field'];
 			
 			$where_string .= " {$wheres[$i]['condition']} ";
-			
+
 			if(is_object($wheres[$i]['value']) && get_class($wheres[$i]['value']) == 'maverick\db_raw')
 			{
 				$where_string .= ' ? ';
@@ -652,6 +661,12 @@ class query
 							$where_string .= ') ';
 						}
 
+						break;
+					}
+					case 'LIKE':
+					{
+						$where_string .= '?';
+						$params[] = $wheres[$i]['value'];
 						break;
 					}
 					default:

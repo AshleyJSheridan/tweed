@@ -203,9 +203,19 @@ class admin_controller extends base_controller
 				break;
 			case 'tweets':
 				$errors = false;
-				// todo: generate fetch parameters based on the passed in filter options
 
-				$tweets = content::get_tweets(null, 10, 1, null, null, null, null, null, null, null);
+				// todo: generate fetch parameters based on the passed in filter options
+				foreach(array('campaign', 'lang', 'user', 'after') as $filter => $value)
+				{
+					$campaign = !empty($_REQUEST['campaign'])?$_REQUEST['campaign']:null;
+					$lang = !empty($_REQUEST['lang'])?$_REQUEST['lang']:null;
+					$user = !empty($_REQUEST['user'])?$_REQUEST['user']:null;
+					$after = !empty($_REQUEST['after'])?$_REQUEST['after']:null;
+				}
+				
+				//var_dump($campaign, $lang, $user, $after);
+
+				$tweets = content::get_tweets(null, 10, 1, $lang, $user, null, null, null, null, null);
 
 				$headers = '["ID #","Campaign","Lang","User","Sent At","Retweet?","Reply?","Approved?","Content","Actions"]';
 				$data = array();
@@ -235,9 +245,29 @@ class admin_controller extends base_controller
 				
 				$tweets_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 				$tweets_table->class = 'item_table tweets';
+				
+				// campaign list
+				$campaign_list = content::get_all_campaigns();
+				foreach($campaign_list as &$c)
+					$c = "\"{$c['name']}\"";
+					
+				// language list
+				$languages = content::get_languages();
+				foreach($languages as &$l)
+					$l = "\"{$l['iso_lang']}\"";
+
+				$filter_form_elements = '{
+					"campaign":{"type":"select","label":"Campaign","values":["",' . implode(',', $campaign_list) . ']},
+					"lang":{"type":"select","label":"Language","values":["",' . implode(',', $languages) . ']},
+					"user":{"type":"text","label":"User"},
+					"after":{"type":"date","placeholder":"' . date("Y-m-d H:i:s") . '","label":"Sent after"},
+					"submit":{"type":"submit","value":"Filter","class":"action filter full"}
+				}';
+				$filter_form = new \helpers\html\form('filter_form', $filter_form_elements);
 
 				$view_params = array(
 					'tweets_table' => $tweets_table->render(),
+					'filter_form' => $filter_form->render(),
 					'scripts'=>array(
 						'/js/tweets.js'=>10, 
 					)
