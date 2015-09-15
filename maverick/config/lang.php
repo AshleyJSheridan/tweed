@@ -9,4 +9,9 @@ return array(
 	'default' => 'en-GB',
 	
 	'active' => true,	// set this to true if you want to make use of i18n translation features in your application
+	
+	'pagination_first' => '↞',
+	'pagination_last' => '↠',
+	'pagination_prev' => '←',
+	'pagination_next' => '→',
 );

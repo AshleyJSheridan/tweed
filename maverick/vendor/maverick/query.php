@@ -42,6 +42,9 @@ class query
 			
 			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data', 'data_ins', 'data_up') as $var)
 				$q->$var = array();
+			
+			foreach(array('limit') as $var)
+				$q->$var = null;
 		}
 		
 		if(!(self::$_instance instanceof self))
@@ -206,6 +209,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * creates a WHERE LIKE clause
+	 * @param string $field the field to WHERE LIKE
+	 * @param mixed $value the value to use in the WHERE
+	 * @return type
+	 */
 	public static function whereLike($field, $value)
 	{
 		$q = query::getInstance();

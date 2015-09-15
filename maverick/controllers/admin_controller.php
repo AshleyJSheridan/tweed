@@ -205,18 +205,27 @@ class admin_controller extends base_controller
 				$errors = false;
 
 				// todo: generate fetch parameters based on the passed in filter options
-				foreach(array('campaign', 'lang', 'user', 'after') as $filter => $value)
+				$pagination_filter = array();
+				foreach(array('campaign', 'lang', 'user', 'after') as $filter)
 				{
-					$campaign = !empty($_REQUEST['campaign'])?$_REQUEST['campaign']:null;
-					$lang = !empty($_REQUEST['lang'])?$_REQUEST['lang']:null;
-					$user = !empty($_REQUEST['user'])?$_REQUEST['user']:null;
-					$after = !empty($_REQUEST['after'])?$_REQUEST['after']:null;
+					if(!empty($_REQUEST[$filter]) )
+					{
+						$$filter = $_REQUEST[$filter];
+						$pagination_filter[] = "$filter=" . filter_var($_REQUEST[$filter], FILTER_SANITIZE_SPECIAL_CHARS);
+					}
+					else
+						$$filter = null;
 				}
+				$current_page = (!empty($_REQUEST['page']) && intval($_REQUEST['page']) )?intval($_REQUEST['page']):1;
+
+				// get the tweets (with any specified filter parameters if available)
+				$tweets = content::get_tweets(null, $this->app->get_config('twitter.total'), $current_page, $lang, $user, null, null, null, null, null);
+				$tweets_count = content::get_tweets_count(null, $lang, $user, null, null, null, null, null);
 				
-				//var_dump($campaign, $lang, $user, $after);
+				// get the pagination string
+				$pagination_links = $this->get_pagination('/' . $this->app->get_config('tweed.admin_path') . '/tweets', $current_page, $tweets_count, $pagination_filter);
 
-				$tweets = content::get_tweets(null, 10, 1, $lang, $user, null, null, null, null, null);
-
+				// create the table
 				$headers = '["ID #","Campaign","Lang","User","Sent At","Retweet?","Reply?","Approved?","Content","Actions"]';
 				$data = array();
 
@@ -246,6 +255,7 @@ class admin_controller extends base_controller
 				$tweets_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 				$tweets_table->class = 'item_table tweets';
 				
+				// create the filter form
 				// campaign list
 				$campaign_list = content::get_all_campaigns();
 				foreach($campaign_list as &$c)
@@ -265,14 +275,17 @@ class admin_controller extends base_controller
 				}';
 				$filter_form = new \helpers\html\form('filter_form', $filter_form_elements);
 
+				// set up the view
 				$view_params = array(
 					'tweets_table' => $tweets_table->render(),
 					'filter_form' => $filter_form->render(),
+					'pagination' => $pagination_links,
 					'scripts'=>array(
 						'/js/tweets.js'=>10, 
 					)
 				);
 				
+				// add in any errors that might have been generated which should be shown to the user
 				if($errors)
 					$view_params['errors'] = $errors;
 				
@@ -415,5 +428,39 @@ class admin_controller extends base_controller
 		}
 		
 		return $errors_html;
+	}
+	
+	private function get_pagination($url, $current_page, $total, $pagination_filter)
+	{	
+		$filter = implode('&', $pagination_filter);
+		$last_page = ($total)?intval($total / $this->app->get_config('twitter.total') ):1;
+		
+		// first
+		$pagination_string = "<a class=\"first\" href=\"$url?$filter&page=1\">" . $this->app->get_config('lang.pagination_first') . '</a>';
+		
+		// previous
+		if($current_page > 1)
+			$pagination_string .= "<a class=\"prev\" href=\"$url?$filter&page=" . ($current_page - 1) . '">' . $this->app->get_config('lang.pagination_prev') . '</a>';
+		
+		// surrounding
+		if($total)
+		{
+			$before_after = 2;
+			for($i=($current_page-$before_after); $i<=($current_page+$before_after); $i++)
+			{
+				$active = ($i == $current_page)?'active':'';
+
+				if($i>0 && $i<($last_page+1) )
+					$pagination_string .= "<a class=\"$active\" href=\"$url?$filter&page=$i\">$i</a>";
+			}
+		}
+		
+		// next
+		if($current_page < $last_page)
+			$pagination_string .= "<a class=\"next\" href=\"$url?$filter&page=" . ($current_page + 1) . '">' . $this->app->get_config('lang.pagination_next') . '</a>';
+		// last
+		$pagination_string .= "<a class=\"last\" href=\"$url?$filter&page=$last_page\">" . $this->app->get_config('lang.pagination_last') . '</a>';
+		
+		return $pagination_string;
 	}
 }

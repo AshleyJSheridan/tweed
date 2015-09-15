@@ -224,3 +224,35 @@ section.main
 		right: $spacing;
 	}
 }
+.pagination
+{
+	background: $light-grey;
+	border-radius: $spacing;
+	margin: $spacing*2 0;
+	padding: $spacing;
+	text-align: center;
+	
+	a
+	{
+		color: $dark;
+		padding: $spacing/2 $spacing;
+		text-decoration: none;
+		
+		&:hover
+		{
+			background-color: $highlight;
+			color: $light-grey;
+			border-radius: $spacing;
+		}
+	}
+	
+	.first, .last, .prev, .next
+	{
+		font-size: larger;
+	}
+	.active
+	{
+		color: $highlight;
+		font-weight: bold;
+	}
+}

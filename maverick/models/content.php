@@ -146,7 +146,7 @@ class content
 		$tweets = db::table('tweets AS t')
 			->leftJoin('campaigns AS c', array('c.id', '=', 't.campaign_id') )
 			//->where('campaign_id', '=', db::raw($campaign[0]['id']) )
-			//->limit($total, $offset)
+			->limit($total, $offset)
 			->orderBy('created_at', 'desc')
 			;
 		
@@ -191,9 +191,90 @@ class content
 
 
 		// get the tweets
-		$tweets = $tweets->get(array('t.*', 'c.name AS campaign_name'))->fetch();
+		$tweets = $tweets->get(array('t.*', 'c.name AS campaign_name') )->fetch();
 		
 		return $tweets;
+		
+	}
+	
+	/**
+	 * retrieve tweets for display from the db that match the passed in campaign hash
+	 * @param string $campaign_hash the hash for this campaign
+	 * @param string $lang the 2-character ISO language code
+	 * @param string $screen_name the screen name of a user to retrieve tweets for
+	 * @param int $since timestamp determining when to return tweets from
+	 * @param int $before timestamp determining when to return tweets until
+	 * @param string $reply show, hide, or only - determines if the list will contain, not contain or consist only of, replies
+	 * @param string $retweet show, hide, or only - determines if the list will contain, not contain or consist only of, retweets
+	 * @param string $approved yes or no, show only approved or include non-approved tweets
+	 */
+	static function get_tweets_count($campaign_hash, $lang, $screen_name, $since, $before, $reply, $retweet, $approved)
+	{
+		$app = \maverick\maverick::getInstance();
+		
+		// this check makes sure that the campaign hash sent belongs to a campaign
+		// if null is sent then this will get all tweets as it's a call from the admin section
+		if(!is_null($campaign_hash) )
+		{
+			$campaign = db::table('campaigns')
+				->where('campaign_hash', '=', db::raw($campaign_hash))
+				->get()
+				->fetch();
+			
+			if(empty($campaign[0]['id']))
+				return 'Campaign does not exist';
+		}
+		
+		$tweets = db::table('tweets AS t');
+
+		// we only need to join this table if we're filtering by the campaign, as the table values aren't used for the total
+		if($campaign_hash)
+			$tweets = $tweets->leftJoin('campaigns AS c', array('c.id', '=', 't.campaign_id') );
+		
+		// if the campaign hash was sent and maps to a valid id, then make that part of the where clause
+		if(!empty($campaign[0]['id']) )
+			$tweets = $tweets->where('campaign_id', '=', db::raw($campaign[0]['id']) );
+		
+
+		// filter by any additional parameters which are not null or false
+		if($lang)
+			$tweets = $tweets->where('iso_lang', '=', db::raw ($lang) );
+		if($screen_name)
+			$tweets = $tweets->whereLike('user_screen_name', db::raw ($screen_name) );
+		if($since)
+			$tweets = $tweets->where('created_at', '>', db::raw (date("Y-m-d H:i:s", $since) ) );
+		if($before)
+			$tweets = $tweets->where('created_at', '<', db::raw (date("Y-m-d H:i:s", $before) ) );
+		if($reply)
+		{
+			switch($reply)
+			{
+				case 'hide':
+					$tweets = $tweets->where('in_reply_to_id', '=', db::raw('0') );
+					break;
+				case 'only':
+					$tweets = $tweets->where('in_reply_to_id', '>', db::raw('0') );
+					break;
+			}
+		}
+		if($retweet)
+		{
+			switch($retweet)
+			{
+				case 'hide':
+					$tweets = $tweets->where('retweet_count', '=', db::raw('0') );
+					break;
+				case 'only':
+					$tweets = $tweets->where('retweet_count', '>', db::raw('0') );
+					break;
+			}
+		}
+
+
+		// get the tweets
+		$tweets = $tweets->get(array('COUNT(t.id) AS total') )->fetch();
+		
+		return (int)$tweets[0]['total'];
 		
 	}
 	
