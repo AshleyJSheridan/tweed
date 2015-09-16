@@ -22,7 +22,7 @@ body
 header
 {
 	background-repeat: no-repeat;
-	background-image: url(/img/maverick/logo_small_w300.png);
+	background-image: url(/img/logo_small_w300.png);
 	background-size: 150px auto;
 	padding-top: 150 + $spacing;
 	background-color: $dark;
@@ -33,7 +33,7 @@ header
 	
 	.basic &
 	{
-		background-image: url(/img/maverick/logo_large_w600.png);
+		background-image: url(/img/logo_large_w600.png);
 		background-size: 600px auto;
 		background-position: center top;
 		background-color: $light;

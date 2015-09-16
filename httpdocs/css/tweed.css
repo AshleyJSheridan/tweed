@@ -12,8 +12,8 @@ html { height: 100%; }
 
 body { margin: 0; font-family: "Lato", Arial, Verdana, sans-serif; background-color: #eeeeee; color: #333333; font-size: 12pt; height: 100%; }
 
-header { background-repeat: no-repeat; background-image: url(/img/maverick/logo_small_w300.png); background-size: 150px auto; padding-top: 160px; background-color: #333333; color: #eeeeee; width: 150px; height: 100%; float: left; }
-.basic header { background-image: url(/img/maverick/logo_large_w600.png); background-size: 600px auto; background-position: center top; background-color: #eeeeee; height: 330px; width: 100%; padding-top: 0; float: none; }
+header { background-repeat: no-repeat; background-image: url(/img/logo_small_w300.png); background-size: 150px auto; padding-top: 160px; background-color: #333333; color: #eeeeee; width: 150px; height: 100%; float: left; }
+.basic header { background-image: url(/img/logo_large_w600.png); background-size: 600px auto; background-position: center top; background-color: #eeeeee; height: 330px; width: 100%; padding-top: 0; float: none; }
 header nav { display: block; }
 header nav a { color: #eeeeee; text-decoration: none; text-transform: uppercase; padding: 60px 5px 5px; display: block; background-repeat: no-repeat; background-position: center 10px; text-align: center; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
 header nav a:hover, header nav a.active { background-color: #0d80b9; }
