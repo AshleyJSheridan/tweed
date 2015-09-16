@@ -6,6 +6,7 @@ $app = \maverick\maverick::getInstance();
 // admin routes
 route::any("{$app->get_config('tweed.admin_path')}(/[^/]+)?(/.+)?", 'admin_controller->admin', array('$1', '$2') );
 route::any("{$app->get_config('tweed.admin_path')}/login", 'admin_controller->login');
+route::any("{$app->get_config('tweed.admin_path')}/logout", 'admin_controller->logout');
 route::post("{$app->get_config('tweed.admin_path')}/tweets/(approve|unapprove)/([\d]+)", 'admin_controller->update_tweet_status', array('$1', '$2') );
 
 route::get('campaigns', 'main_controller->get_campaigns');			// reserved for the cron to call

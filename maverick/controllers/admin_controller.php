@@ -336,6 +336,14 @@ class admin_controller extends base_controller
 		$view = view::make('includes/template_basic')->with('page', 'login')->with('login_form', $form->render() )->render();
 	}
 	
+	function logout()
+	{
+		unset($_SESSION['maverick_login']);
+		unset($_SESSION['maverick_id']);
+		
+		view::redirect('/' . $this->app->get_config('tweed.admin_path') . '/login');
+	}
+	
 	/**
 	 * clean up the list of passed in url parameters
 	 * @param array $params the array of parameters to clean
