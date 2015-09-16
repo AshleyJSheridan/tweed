@@ -77,15 +77,15 @@ class content
 						'created_at' => date("Y-m-d H:i:s", strtotime($status->created_at) ),
 						'content' => (!empty($status->retweeted_status) )?$status->retweeted_status->text:$status->text,
 						'source' => $status->source,
-						'in_reply_to_id' => $status->in_reply_to_user_id_str,
+						'in_reply_to_id' => (int)$status->in_reply_to_user_id_str,
 						'in_reply_to_screen_name' => $status->in_reply_to_screen_name,
 						'retweet_count' => $status->retweet_count,
 					);
-					var_dump($status);
+
 					$tweet_id = db::table('tweets')
 						->insert($data)
 						->fetch();
-					
+var_dump($status, $tweet_id);
 					$data = array();
 					foreach(array('hashtags', 'urls', 'media') as $entity_type)
 					{
