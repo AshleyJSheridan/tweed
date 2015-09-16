@@ -310,7 +310,7 @@ class content
 			->leftJoin('users AS u', array('u.id', '=', 'c.created_by') )
 			->leftJoin('users AS u2', array('u2.id', '=', 'c.modified_by') )
 			->groupBy('c.id')
-			->get(array('c.id', 'c.name', 'c.start', 'c.end', 'c.last_used', 'COUNT(q.id) AS query_params', 'u.username AS created_by', 'u2.username AS modified_by', 'c.force_deactivated') )
+			->get(array('c.id', 'c.name', 'c.campaign_hash', 'c.start', 'c.end', 'c.last_used', 'COUNT(q.id) AS query_params', 'u.username AS created_by', 'u2.username AS modified_by', 'c.force_deactivated') )
 			->fetch()
 			;
 		

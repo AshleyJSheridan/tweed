@@ -86,6 +86,16 @@ class main_controller extends base_controller
 	function update($campaign_hash)
 	{
 		$get = content::fetch_tweets_from_twitter($campaign_hash);
-
+	}
+	
+	function get_campaigns()
+	{
+		$campaigns = content::get_all_campaigns();
+		
+		foreach($campaigns as $campaign)
+		{
+			if($campaign['force_deactivated'] == 'no' && strtotime($campaign['end']) > time() )
+				$get = content::fetch_tweets_from_twitter($campaign['campaign_hash']);
+		}
 	}
 }

@@ -10,9 +10,13 @@
 				
 				// add query button
 				$('.action.add_query').on('click', function(){
-					$('.query:last').clone().appendTo('.query_fields');
-					$('.query:last input[name=content\\[\\]]').attr('value', '');
-					$('.query:last input[name=item_order\\[\\]]').attr('value', $('.query').length );
+					// don't allow queries more complex than 10, as this is a limit imposed by Twitter
+					if($('.query').length < 10)
+					{
+						$('.query:last').clone().appendTo('.query_fields');
+						$('.query:last input[name=content\\[\\]]').attr('value', '');
+						$('.query:last input[name=item_order\\[\\]]').attr('value', $('.query').length );
+					}
 				});
 				
 				// save button
