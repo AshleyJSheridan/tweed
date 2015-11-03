@@ -60,7 +60,7 @@ class content
 			// https://twitteroauth.com/
 			$connection = new \Abraham\TwitterOAuth\TwitterOAuth($app->get_config('twitter.consumer_key'), $app->get_config('twitter.consumer_secret'), $app->get_config('twitter.access_token'), $app->get_config('twitter.access_token_secret') );
 
-			$search = $connection->get('search/tweets', array('q'=>"#sxsw -2016", 'result_type'=>'recent', 'count'=>100, ) );
+			$search = $connection->get('search/tweets', array('q'=>"#crestonexpo #tweetput", 'result_type'=>'recent', 'count'=>100, ) );
 
 			if(!empty($search->statuses))
 			{
